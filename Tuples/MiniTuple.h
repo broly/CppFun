@@ -32,9 +32,7 @@ namespace detail
 		}
 	};
 }
-	
-template<>
-struct minituple<> {};
+
 
 // Last tuple element implementation
 template<typename T>
@@ -57,6 +55,8 @@ struct minituple<T>
 	{
 		return First;
 	}
+
+	static constexpr size_t size = 1;
 };
 
 // Tuple element implementation
@@ -83,7 +83,17 @@ struct minituple<T, Ts...>
 		return detail::GetHelper<sizeof...(Ts) - Index, minituple<T, Ts...>>::Get(*this);
 	}
 
-    static constexpr size_t size = sizeof...(Ts) + 1;
+	static constexpr size_t size = sizeof...(Ts) + 1;
+};
+
+// Empty tuple implementation
+template<>
+struct minituple<>
+{
+	constexpr minituple()
+	{}
+
+	static constexpr size_t size = 0;
 };
 
 int main()
