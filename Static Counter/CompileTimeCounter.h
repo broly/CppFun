@@ -116,6 +116,31 @@ enum class MaskEnum
     d = msk::next(),
 };
 
+
+// Special counter for integral functions
+template<auto Func = [](int) -> int {}, auto CounterUniqueId = []{}>
+struct CounterFunc : private Counter<CounterUniqueId>
+{
+    // We should make `next` unique always, so we use lambda as template parameter
+    template<auto = []{}>
+    static consteval auto next() 
+    {
+        return Func(Counter<CounterUniqueId>::next());
+    }
+};
+
+using sqcnt = CounterFunc<[] (int a) -> int { return a * a; }>;
+
+
+enum class SqrEnum
+{
+    a = sqcnt::next(),
+    b = sqcnt::next(),
+    c = sqcnt::next(),
+    d = sqcnt::next(),
+    e = sqcnt::next(),
+};
+
 int main()
 {
     std::cout << (int)Enum1::a;  // 0
@@ -136,4 +161,12 @@ int main()
     std::cout << (int)MaskEnum::b;  // 2
     std::cout << (int)MaskEnum::c;  // 4
     std::cout << (int)MaskEnum::d;  // 8
+    
+    std::cout << "\n";
+
+    std::cout << (int)SqrEnum::a; // 0
+    std::cout << (int)SqrEnum::b; // 1
+    std::cout << (int)SqrEnum::c; // 4
+    std::cout << (int)SqrEnum::d; // 9
+    std::cout << (int)SqrEnum::e; // 16
 }
