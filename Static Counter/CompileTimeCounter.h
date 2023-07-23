@@ -115,22 +115,22 @@ enum class MaskEnum
 
 int main()
 {
-    std::cout << (int)Enum1::a;
-    std::cout << (int)Enum1::b;
-    std::cout << (int)Enum1::c;
-    std::cout << (int)Enum1::d;
+    std::cout << (int)Enum1::a;  // 0
+    std::cout << (int)Enum1::b;  // 1
+    std::cout << (int)Enum1::c;  // 2
+    std::cout << (int)Enum1::d;  // 3
 
     std::cout << "\n";
     
-    std::cout << (int)Enum2::a;
-    std::cout << (int)Enum2::b;
-    std::cout << (int)Enum2::c;
-    std::cout << (int)Enum2::d;
+    std::cout << (int)Enum2::a;  // 0
+    std::cout << (int)Enum2::b;  // 1
+    std::cout << (int)Enum2::c;  // 2
+    std::cout << (int)Enum2::d;  // 3
 
     std::cout << "\n";
 
-    std::cout << (int)MaskEnum::a;
-    std::cout << (int)MaskEnum::b;
-    std::cout << (int)MaskEnum::c;
-    std::cout << (int)MaskEnum::d;
+    std::cout << (int)MaskEnum::a;  // 1
+    std::cout << (int)MaskEnum::b;  // 2
+    std::cout << (int)MaskEnum::c;  // 4
+    std::cout << (int)MaskEnum::d;  // 8
 }
