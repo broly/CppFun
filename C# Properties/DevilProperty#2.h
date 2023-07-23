@@ -35,19 +35,20 @@ class Property
 public:
     RAVAGE // Make property memory-zero-cost if possible
 
-    Cls* GetThis() const
+    Cls* GetHolderPtr() const
     {
+        // Go from current memory location to holder location
         return (Cls*)(reinterpret_cast<const unsigned char*>(this) - OffsetHelper::GetOffset());
     }
 
     T Get() const
     {
-        return invoke(Getter, GetThis());
+        return invoke(Getter, GetHolderPtr());
     }
 
     void Set(T&& V) const
     {
-        invoke(Setter, GetThis(), std::forward<T>(V));
+        invoke(Setter, GetHolderPtr(), std::forward<T>(V));
     }
 
     const Property& operator=(T&& V) const
