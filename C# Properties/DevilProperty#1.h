@@ -14,8 +14,11 @@ using namespace std;
 namespace evil
 {
     // Helper that converts pointer-to-member to offset of member
-    size_t FieldToOffset(auto Field)
+    template<typename Class, typename FieldType>
+    unsigned int MemberPtrToOffset(FieldType Class::*PointerToMember)
     {
+        // A pointer-to-member could not be cast to an integral type via any known cast (even reinterpret_cast)
+        // So use the union to break this limitation
         union
         {
             unsigned int Result;
@@ -49,7 +52,7 @@ public:
 
     Cls* GetThis() const
     {
-        return (Cls*)(reinterpret_cast<const unsigned char*>(this) - evil::FieldToOffset(ThisField));
+        return (Cls*)(reinterpret_cast<const unsigned char*>(this) - evil::MemberPtrToOffset(ThisField));
     }
 
     T Get() const
@@ -128,11 +131,11 @@ int main()
     a.Prop2 = 444;
     int q = a.Prop2;
 
-    std::cout << "Test FieldToOffset 1: " << evil::FieldToOffset(&Test::__dummy_Prop) << " " << offsetof(Test, Prop) << std::endl;
-    std::cout << "Test FieldToOffset 2: " << evil::FieldToOffset(&Test::__dummy_Prop2) << " " <<  offsetof(Test, Prop2) << std::endl;
+    std::cout << "Test MemberPtrToOffset 1: " << evil::MemberPtrToOffset(&Test::__dummy_Prop) << " " << offsetof(Test, Prop) << std::endl;
+    std::cout << "Test MemberPtrToOffset 2: " << evil::MemberPtrToOffset(&Test::__dummy_Prop2) << " " <<  offsetof(Test, Prop2) << std::endl;
 
-    std::cout << "Test FieldToOffset ptr diff 1: " << offsetof(Test, Prop) - evil::FieldToOffset(&Test::__dummy_Prop) << std::endl;
-    std::cout << "Test FieldToOffset ptr diff 2: " << offsetof(Test, Prop2) - evil::FieldToOffset(&Test::__dummy_Prop2)<< std::endl;
+    std::cout << "Test MemberPtrToOffset ptr diff 1: " << offsetof(Test, Prop) - evil::MemberPtrToOffset(&Test::__dummy_Prop) << std::endl;
+    std::cout << "Test MemberPtrToOffset ptr diff 2: " << offsetof(Test, Prop2) - evil::MemberPtrToOffset(&Test::__dummy_Prop2)<< std::endl;
 
     std::cout << "size of property: " << sizeof(Test::Prop) << std::endl;
     std::cout << "size of class: " << sizeof(Test) << std::endl;
