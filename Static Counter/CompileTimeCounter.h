@@ -42,8 +42,9 @@ namespace detail
         // otherwise we produce `helper` and return false - current `Index` not exists yet
         // When `helper` is instantiated, it caches `is_instantiated` function, so it switches `exists` to another overloading
         static consteval bool exists(...)
-        { 
-            return helper(), false; 
+        {
+            helper();  // just instantiate for cache
+            return false; 
         }
     };
 }
