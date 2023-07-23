@@ -21,11 +21,11 @@ namespace evil
         // So use the union to break this limitation
         union
         {
-            unsigned int Result;
-            decltype(Field) Field;
+            unsigned int Offset;
+            FieldType Class::* PtrToMember;
         } FieldOffset;
-        FieldOffset.Field = Field;
-        return FieldOffset.Result;
+        FieldOffset.PtrToMember = PointerToMember;
+        return FieldOffset.Offset;
     }
 
     // Memory-zero-cost type
