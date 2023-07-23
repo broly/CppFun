@@ -5,7 +5,7 @@
 namespace details
 {
 	template<typename Owner>
-    struct property_owner
+	struct property_owner
 	{
 		constexpr explicit property_owner(Owner* owner)
 			: _owner(owner)
