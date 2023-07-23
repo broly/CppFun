@@ -43,8 +43,8 @@ namespace detail
         // When `helper` is instantiated, it caches `is_instantiated` function, so it switches `exists` to another overloading
         static consteval bool exists(...)
         {
-            helper dummy;  // just instantiate for cache (and use it with comma operator to avoid optimization out)
-            return dummy, false;
+            // just instantiate for cache (and use it with comma operator to avoid optimization out)
+            return helper(), false;
         }
     };
 }
