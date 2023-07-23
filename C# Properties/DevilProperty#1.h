@@ -15,7 +15,7 @@ namespace evil
 {
     // Helper that converts pointer-to-member to offset of member
     template<typename Class, typename FieldType>
-    unsigned int MemberPtrToOffset(FieldType Class::*PointerToMember)
+    unsigned int MemberPtrToOffset(FieldType Class::* PointerToMember)
     {
         // A pointer-to-member could not be cast to an integral type via any known cast (even reinterpret_cast)
         // So use the union to break this limitation
