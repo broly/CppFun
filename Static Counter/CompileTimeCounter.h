@@ -7,7 +7,8 @@
 
 namespace detail
 {
-    enum { check };
+    // special dummy type for function select
+    enum check_t { check };
 
     // Index        - counting index (0, 1, 2, 3, ...)
     // CounterId    - unique counter type (usually it is lambda)
@@ -33,7 +34,7 @@ namespace detail
         // substitution produces this function if `is_instantiated` is really exists, 
         //   `helper` is instantiated - current `Index` already exists
         template<typename T = this_inst, bool = is_instantiated(T{})>
-        static consteval bool exists(decltype(check))
+        static consteval bool exists(check_t check)
         { 
             return true; 
         }
