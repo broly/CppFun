@@ -1,6 +1,8 @@
+// https://github.com/broly
 // This holder-less C# property implementation
 // It gives possibility (on several compilers) to fully get rid of presense of this property in memory
 // On compiler like MSVC it still has size, but as little as possible
+// WARNING: DO NOT USE IT IN YOUR CODE! It is not compatible with non-standard class layouts
 
 #include <functional>
 #include <iostream>
@@ -25,9 +27,9 @@ namespace evil
 
     // Memory-zero-cost type
 #if !defined(_MSC_VER)
-    using ravage = unsigned char[0]; 
+    using ravage = unsigned char[0];  // "ravage" means that a class that only has a variable of that type becomes zero-sized
 #else 
-    using ravage = unsigned char;
+    using ravage = unsigned char;  // on MSVC it does not works
 #endif
 }
 
