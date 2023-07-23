@@ -1,3 +1,4 @@
+// github.com/broly/CppFun
 // This is property pattern that gives possibility to access inner state of object 
 // Property imitates class field
 // You can specify getter and optionally setter
