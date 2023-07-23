@@ -13,9 +13,9 @@ namespace evil
 {
     // Memory-zero-cost type
 #if !defined(_MSC_VER)
-    using ravage = unsigned char[0]; 
+    using ravage = unsigned char[0];  // "ravage" means that a class that only has a variable of that type becomes zero-sized
 #else 
-    using ravage = unsigned char;
+    using ravage = unsigned char;  // on MSVC it does not works
 #endif
 }
 
