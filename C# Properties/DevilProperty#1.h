@@ -105,12 +105,13 @@ public:
     int Val;
     int Val2;
 
+    // Dirty layout stuff (try to break devil property)
     long long int a;
-
     char b[5];
 
     PROPERTY(Prop, Test, int, Get, Set);
 
+    // Dirty layout stuff (try to break devil property)
     char c[5]; 
 
     PROPERTY(Prop2, Test, int, Get2, Set2);
