@@ -1,6 +1,8 @@
+// github.com/broly/CppFun
 // This holder-less C# property implementation (v.2)
 // It gives possibility (on several compilers) to fully get rid of presense of this property in memory
 // On compiler like MSVC it still has size, but as little as possible
+// WARNING: DO NOT USE IT IN YOUR CODE! It is not compatible with non-standard class layouts
 
 #include <functional>
 #include <iostream>
