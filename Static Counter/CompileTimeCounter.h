@@ -18,14 +18,14 @@ namespace detail
         // this template instance
         using this_inst = counter_cacher<Index, CounterId>;
 
-        // this struct contains special friend function that always returns true
+        // this struct contains special friend dummy function 
         // it exists only if struct is really instantiated
         // we use `this_inst` as tag for defer instatiation
         struct helper 
         {
             friend consteval bool is_instantiated(this_inst)
             { 
-                return true; 
+                return true; // doesn't make sense (only for instance)
             }
         };
 
