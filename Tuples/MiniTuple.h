@@ -11,7 +11,7 @@ namespace detail
 	template<size_t Index, typename T>
 	struct GetHelper;
 
-	// Accessing to first (0) element (0 is just access to 'First' field)
+	// Accessing to first (0) element
 	template<typename T, typename... Ts>
 	struct GetHelper<0, minituple<T, Ts... >>
 	{
