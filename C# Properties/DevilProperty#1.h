@@ -36,7 +36,7 @@ namespace evil
 // This is evil thing that makes property memory zero cost (sizeof(Property) == 0)
 // NOTE: This does not works with MSVC
 #if !defined(_MSC_VER)
-    #define RAVAGE evil::ravage a;
+    #define RAVAGE evil::ravage __RAVAGE__;
 #else
     #define RAVAGE
 #endif
