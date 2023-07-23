@@ -1,6 +1,6 @@
 // This holder-less C# property implementation (v.2)
 // It gives possibility (on several compilers) to fully get rid of presense of this property in memory
-// On compiler like MSVC it will still have size, but as little as possible
+// On compiler like MSVC it still has size, but as little as possible
 
 #include <functional>
 #include <iostream>
