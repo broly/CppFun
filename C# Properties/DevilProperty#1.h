@@ -13,11 +13,11 @@ using namespace std;
 
 namespace evil
 {
-    // Helper that converts pointer-to-member to offset of member
+    // Helper that converts pointer-to-member-field to offset of member
     template<typename Class, typename FieldType>
     unsigned int MemberPtrToOffset(FieldType Class::* PointerToField)
     {
-        // A pointer-to-member could not be cast to an integral type via any known cast (even reinterpret_cast)
+        // A pointer-to-member-field could not be cast to an integral type via any known cast (even reinterpret_cast)
         // So use the union to break this limitation
         union
         {
