@@ -13,10 +13,10 @@ namespace detail
     // Index        - counting index (0, 1, 2, 3, ...)
     // CounterId    - unique counter type (usually it is lambda)
     template<size_t Index, auto CounterId>
-    struct counter_cacher 
+    struct counter_index_cacher 
     {
         // this template instance
-        using this_inst = counter_cacher<Index, CounterId>;
+        using this_inst = counter_index_cacher<Index, CounterId>;
 
         // this struct contains special friend dummy function 
         // it exists only if struct is really instantiated
@@ -51,7 +51,7 @@ namespace detail
 
 // Counter class. 
 // Each instance gives possibility to generate unique integer sequence from 0
-// CounterUniqueId - unique identifier that gives possibility to generate unique counter_cacher(s)
+// CounterUniqueId - unique identifier that gives possibility to generate unique counter_index_cacher(s)
 template<auto CounterUniqueId = []{}>
 struct Counter
 {
@@ -63,7 +63,7 @@ struct Counter
     {
         // if cacher (by CounterUniqueId and Index) contains Index, we check next cacher...
         // otherwise return this index
-        if constexpr (detail::counter_cacher<Index, CounterUniqueId>::exists(detail::check)) 
+        if constexpr (detail::counter_index_cacher<Index, CounterUniqueId>::exists(detail::check)) 
         {
             return next<Index + 1>();
         } else 
