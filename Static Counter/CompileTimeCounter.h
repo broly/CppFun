@@ -58,8 +58,8 @@ struct Counter
     // Recursive integer sequence counter
     // Index  - CountingIndex
     // NextId - Unique `next` member function tag (lambda is always unique)
-    template<auto Index = size_t{}, auto NextId = []{}>
-    static consteval auto next() 
+    template<size_t Index = 0, auto NextId = []{}>
+    static consteval size_t next() 
     {
         // if cacher (by CounterUniqueId and Index) contains Index, we check next cacher...
         // otherwise return this index
@@ -83,7 +83,7 @@ struct Masker : private Counter<CounterUniqueId>
 {
     // We should make `next` unique always, so we use lambda as template parameter
     template<auto = []{}>
-    static consteval auto next() 
+    static consteval size_t next() 
     {
         return 1 << Counter<CounterUniqueId>::next();
     }
@@ -123,13 +123,13 @@ struct CounterFunc : private Counter<CounterUniqueId>
 {
     // We should make `next` unique always, so we use lambda as template parameter
     template<auto = []{}>
-    static consteval auto next() 
+    static consteval size_t next() 
     {
         return Func(Counter<CounterUniqueId>::next());
     }
 };
 
-using sqcnt = CounterFunc<[] (int a) -> int { return a * a; }>;
+using sqcnt = CounterFunc<[] (size_t a) -> size_t { return a * a; }>;
 
 
 enum class SqrEnum
