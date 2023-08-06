@@ -22,26 +22,18 @@ namespace detail
 	template<typename IndexSequence, typename... Ts>
 	struct htuple_impl;
 
-	// type selector helpers from type list
 	namespace helpers
 	{
-		template<size_t Index, typename... Ts>
-		struct get_type;
-
-		template<typename T, typename... Ts>
-		struct get_type<0, T, Ts...>
-		{
-			using type = T;
-		};
-
-		template<size_t Index, typename T, typename... Ts>
-		struct get_type<Index, T, Ts...>
-		{
-			using type = typename get_type<Index - 1, Ts...>::type;
-		};
-
-		template<size_t Index, typename... Ts>
-		using get_type_t = typename get_type<Index, Ts...>::type;
+		// Just deduces the type of the element by given index
+        template<size_t Index>
+        struct elem_getter
+        {
+            template<typename DeducedType>
+            static decltype(auto) Get(const htuple_elem<DeducedType, Index>& Tup)
+            {
+                return Tup.Value;
+            }
+        };
 	}
 	
 	// horizontal tuple implementation
@@ -57,9 +49,7 @@ namespace detail
 		template<size_t Index>
 		auto Get()
 		{
-			using type = helpers::get_type_t<size - Index - 1, Ts...>;
-			auto* as_elem = static_cast<htuple_elem<type, size - Index - 1>*>(this);
-			return as_elem->Value;
+            return helpers::elem_getter<Index>::Get(*this);
 		}
 
 		template<size_t Index = 0>
