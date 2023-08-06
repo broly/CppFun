@@ -7,24 +7,25 @@
 
 namespace detail
 {
-    enum { check };
+    // special dummy type for function select
+    enum check_t { check };
 
     // Index        - counting index (0, 1, 2, 3, ...)
     // CounterId    - unique counter type (usually it is lambda)
     template<size_t Index, auto CounterId>
-    struct counter_cacher 
+    struct counter_index_cacher 
     {
         // this template instance
-        using this_inst = counter_cacher<Index, CounterId>;
+        using this_inst = counter_index_cacher<Index, CounterId>;
 
-        // this struct contains special friend function that always returns true
+        // this struct contains special friend dummy function 
         // it exists only if struct is really instantiated
         // we use `this_inst` as tag for defer instatiation
         struct helper 
         {
             friend consteval bool is_instantiated(this_inst)
             { 
-                return true; 
+                return true; // doesn't make sense (only for instance)
             }
         };
 
@@ -33,34 +34,36 @@ namespace detail
         // substitution produces this function if `is_instantiated` is really exists, 
         //   `helper` is instantiated - current `Index` already exists
         template<typename T = this_inst, bool = is_instantiated(T{})>
-        static consteval bool exists(decltype(check))
+        static consteval bool exists(check_t check)
         { 
             return true; 
         }
 
-        // otherwise we produce `generator` and return false - current `Index` not exists yet
+        // otherwise we produce `helper` and return false - current `Index` not exists yet
+        // When `helper` is instantiated, it caches `is_instantiated` function, so it switches `exists` to another overloading
         static consteval bool exists(...)
-        { 
-            return helper(), false; 
+        {
+            // just instantiate for cache (and use it with comma operator to avoid optimization out)
+            return helper(), false;
         }
     };
 }
 
 // Counter class. 
 // Each instance gives possibility to generate unique integer sequence from 0
-// CounterUniqueId - unique identifier that gives possibility to generate unique counter_cacher(s)
+// CounterUniqueId - unique identifier that gives possibility to generate unique counter_index_cacher(s)
 template<auto CounterUniqueId = []{}>
 struct Counter
 {
     // Recursive integer sequence counter
     // Index  - CountingIndex
     // NextId - Unique `next` member function tag (lambda is always unique)
-    template<auto Index = size_t{}, auto NextId = []{}>
-    static consteval auto next() 
+    template<size_t Index = 0, auto NextId = []{}>
+    static consteval size_t next() 
     {
         // if cacher (by CounterUniqueId and Index) contains Index, we check next cacher...
         // otherwise return this index
-        if constexpr (detail::counter_cacher<Index, CounterUniqueId>::exists(detail::check)) 
+        if constexpr (detail::counter_index_cacher<Index, CounterUniqueId>::exists(detail::check)) 
         {
             return next<Index + 1>();
         } else 
@@ -80,7 +83,7 @@ struct Masker : private Counter<CounterUniqueId>
 {
     // We should make `next` unique always, so we use lambda as template parameter
     template<auto = []{}>
-    static consteval auto next() 
+    static consteval size_t next() 
     {
         return 1 << Counter<CounterUniqueId>::next();
     }
@@ -113,24 +116,57 @@ enum class MaskEnum
     d = msk::next(),
 };
 
+
+// Special counter for integral functions
+template<auto Func = [](int) -> int {}, auto CounterUniqueId = []{}>
+struct CounterFunc : private Counter<CounterUniqueId>
+{
+    // We should make `next` unique always, so we use lambda as template parameter
+    template<auto = []{}>
+    static consteval size_t next() 
+    {
+        return Func(Counter<CounterUniqueId>::next());
+    }
+};
+
+using sqcnt = CounterFunc<[] (size_t a) -> size_t { return a * a; }>;
+
+
+enum class SqrEnum
+{
+    a = sqcnt::next(),
+    b = sqcnt::next(),
+    c = sqcnt::next(),
+    d = sqcnt::next(),
+    e = sqcnt::next(),
+};
+
 int main()
 {
-    std::cout << (int)Enum1::a;
-    std::cout << (int)Enum1::b;
-    std::cout << (int)Enum1::c;
-    std::cout << (int)Enum1::d;
+    std::cout << (int)Enum1::a;  // 0
+    std::cout << (int)Enum1::b;  // 1
+    std::cout << (int)Enum1::c;  // 2
+    std::cout << (int)Enum1::d;  // 3
 
     std::cout << "\n";
     
-    std::cout << (int)Enum2::a;
-    std::cout << (int)Enum2::b;
-    std::cout << (int)Enum2::c;
-    std::cout << (int)Enum2::d;
+    std::cout << (int)Enum2::a;  // 0
+    std::cout << (int)Enum2::b;  // 1
+    std::cout << (int)Enum2::c;  // 2
+    std::cout << (int)Enum2::d;  // 3
 
     std::cout << "\n";
 
-    std::cout << (int)MaskEnum::a;
-    std::cout << (int)MaskEnum::b;
-    std::cout << (int)MaskEnum::c;
-    std::cout << (int)MaskEnum::d;
+    std::cout << (int)MaskEnum::a;  // 1
+    std::cout << (int)MaskEnum::b;  // 2
+    std::cout << (int)MaskEnum::c;  // 4
+    std::cout << (int)MaskEnum::d;  // 8
+    
+    std::cout << "\n";
+
+    std::cout << (int)SqrEnum::a; // 0
+    std::cout << (int)SqrEnum::b; // 1
+    std::cout << (int)SqrEnum::c; // 4
+    std::cout << (int)SqrEnum::d; // 9
+    std::cout << (int)SqrEnum::e; // 16
 }
